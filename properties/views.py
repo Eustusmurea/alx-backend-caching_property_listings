@@ -6,5 +6,5 @@ from .models import Property
 def property_list(request):
     properties = Property.objects.all().values("id", "name", "location", "price")
     return JsonResponse({
-        "properties": list(properties)
-    })
+    "data": list(properties)
+})
