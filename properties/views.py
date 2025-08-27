@@ -1,10 +1,10 @@
 from django.http import JsonResponse
-from .utils import get_all_properties
+from django.views.decorators.cache import cache_page
+from .models import Property
 
+@cache_page(60 * 15)
 def property_list(request):
-    """
-    Returns all properties, using Redis cache for queryset.
-    """
-    properties = get_all_properties()
-    data = [{"id": prop.id, "title": prop.title, "price": prop.price} for prop in properties]
-    return JsonResponse(data, safe=False)
+    properties = Property.objects.all().values("id", "name", "location", "price")
+    return JsonResponse({
+        "properties": list(properties)
+    })
